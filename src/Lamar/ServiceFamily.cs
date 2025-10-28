@@ -26,19 +26,24 @@ public class ServiceFamily
             instance.IsOnlyOneOfServiceType = false;
         }
 
-        if (instances.Any())
-        {
-            instances.Last().IsDefault = true;
-        }
-
         if (instances.Length == 1)
         {
             instances[0].IsOnlyOneOfServiceType = true;
+            instances[0].IsDefault = true;
+            Default = instances[0];
+        }
+        else
+        {
+            Instance lastNonKeyedService = instances.LastOrDefault(i => !i.IsKeyedService);
+            if (lastNonKeyedService != null)
+            {
+                lastNonKeyedService.IsDefault = true;
+            }
+
+            Default = lastNonKeyedService;
         }
 
         ServiceType = serviceType;
-
-        Default = instances.LastOrDefault();
 
 
         makeNamesUnique(instances);
