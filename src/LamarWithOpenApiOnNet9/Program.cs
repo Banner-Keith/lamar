@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // use Lamar as DI.
 builder.Host.UseLamar((context, registry) =>
 {
-    // register services using Lamar
+    // register services using Lamar. Only inject ITest as a keyed service
 
     registry.AddKeyedSingleton<ITest, MyTest>(OpenApiTestConstants.TestServiceKey1);
     registry.AddKeyedSingleton<ITest, MyOtherTest>(OpenApiTestConstants.TestServiceKey2);
@@ -82,6 +82,11 @@ public class TestTime : ITestTime
     public DateTime GetTime() => DateTime.Now;
 }
 
+public class UnkeyedTest : ITest
+{
+    public string SayHello() => "Hi there";
+}
+
 public class MyTest : ITest
 {
     public string SayHello() => "Hi there";
@@ -102,6 +107,26 @@ public class MyTypedTest : ITest
     }
 
     public string SayHello() => $"Hi there from typed service {_serviceKey}";
+}
+
+public class ExampleTypeUsingGenericITest
+{
+    private readonly ITest _testType;
+
+    public ExampleTypeUsingGenericITest(ITest testType)
+    {
+        _testType = testType;
+    }
+}
+
+public class ExampleTypeUsingTypedITest
+{
+    private readonly ITest _testType;
+
+    public ExampleTypeUsingTypedITest([FromKeyedServices(OpenApiTestConstants.TestServiceKey1)] ITest testType)
+    {
+        _testType = testType;
+    }
 }
 
 public class MyRegistry : ServiceRegistry

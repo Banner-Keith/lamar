@@ -1,10 +1,9 @@
-using System;
-using System.Threading.Tasks;
 using Alba;
 using Lamar;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Shouldly;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OpenApiKeyedServiceIntegrationTests;
